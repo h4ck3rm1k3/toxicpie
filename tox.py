@@ -302,7 +302,10 @@ class Tox(object):
         with self._lock:
             assert self._p
             message = message.encode('utf-8')
-            address = util.hex_to_buffer(address)
+            try:
+                address = util.hex_to_buffer(address)
+            except:
+                raise ToxError('Invalid ID format')
             message = create_string_buffer(message, len(message))
             friend_id = err = tox_add_friend(self._p, address, message, len(message))
             if err < 0:
