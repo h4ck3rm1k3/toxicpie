@@ -360,10 +360,7 @@ class Tox(object):
             assert self._p
             message = message.encode('utf-8')
             buffer = create_string_buffer(message, len(message))
-            message_id = tox_send_message(self._p, friend_id, buffer, len(buffer))
-            if message_id < 0:
-                return None
-            return message_id
+            return tox_send_message(self._p, friend_id, buffer, len(buffer))
 
     def send_message_withid(self, friend_id, message_id, message):
         with self._lock:
@@ -558,11 +555,16 @@ class Tox(object):
             return tox_join_groupchat(self._p, friend_id, buffer) == 0
 
     def group_message_send(self, group_id, message):
+        """
+        Returns: 1 on success, 0 on failure
+        """
         with self._lock:
             assert self._p
             message = message.encode('utf-8')
             buffer = create_string_buffer(message, len(message))
-            return tox_group_message_send(self._p, group_id, buffer, len(buffer)) == 0
+            # Return value is made compatible with message_send() API.
+            # 0 = failure, 1 = simulating valid message id
+            return tox_group_message_send(self._p, group_id, buffer, len(buffer)) + 1
 
     def group_action_send(self, group_id, action):
         with self._lock:
