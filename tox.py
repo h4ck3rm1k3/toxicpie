@@ -375,6 +375,7 @@ class Tox(object):
     def send_action(self, friend_id, action):
         with self._lock:
             assert self._p
+            action = action.encode('utf-8')
             buffer = create_string_buffer(action, len(action))
             action_id = tox_send_action(self._p, friend_id, buffer, len(buffer))
             if action_id < 0:
@@ -384,6 +385,7 @@ class Tox(object):
     def send_action_withid(self, friend_id, action_id, action):
         with self._lock:
             assert self._p
+            action = action.encode('utf-8')
             buffer = create_string_buffer(action, len(action))
             action_id = tox_send_action_withid(self._p, friend_id, action_id, buffer, len(buffer))
             if action_id < 0:
@@ -569,6 +571,7 @@ class Tox(object):
     def group_action_send(self, group_id, action):
         with self._lock:
             assert self._p
+            action = action.encode('utf-8')
             buffer = create_string_buffer(action, len(action))
             return tox_group_action_send(self._p, group_id, buffer, len(buffer)) == 0
 
